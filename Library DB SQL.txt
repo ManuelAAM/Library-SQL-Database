@@ -1,0 +1,807 @@
+create table personas(nombre varchar(25), apellido_paterno varchar(25), apellido_materno varchar(25),edad int, direccion varchar(50), id_persona serial, constraint "pk_personas" primary key (id_persona));
+create table telefono(telefono varchar(15),id_persona int,id_telefono serial,constraint "pk_telefono" primary key(id_telefono));
+create table cliente(fecha_registro date,id_tipocliente int,id_persona int,id_cliente serial, constraint "pk_cliente" primary key(id_cliente));
+create table tipocliente(tipo_cliente varchar(30),id_tipocliente serial, constraint "pk_tipocliente" primary key(id_tipocliente));
+create table contenido(titulo varchar(100),autor varchar(50),ano int,id_idioma int,numero_paginas int,id_tipo int,id_seccion int,id_editorial int,descripcion text, id_contenido serial, constraint "pk_contenido" primary key(id_contenido));
+create table idioma(idioma varchar(50),id_idioma serial,constraint "pk_idioma" primary key(id_idioma));
+create table tipo(nombre varchar(50),id_tipo serial, constraint "pk_tipo" primary key(id_tipo));
+create table seccion(nombre varchar(75),descripcion varchar(100),id_seccion serial, constraint "pk_seccion" primary key(id_seccion));
+create table editorial(nombre varchar(50),id_editorial serial, constraint "pk_editorial" primary key(id_editorial));
+create table prestamo(fecha_prestamo date, fecha_tope date, fecha_devolucion date,id_contenido int,id_cliente int ,id_prestamo serial, constraint "pk_prestamo" primary key(id_prestamo));
+create table tipoempleado(nombre varchar(50),descripcion varchar(100),id_tipoempleado serial, constraint "pk_tipoempleado" primary key(id_tipoempleado));
+create table cargo(nombre varchar(50),descripcion varchar(100),id_cargo serial, constraint "pk_cargo" primary key(id_cargo));
+create table empleados(id_persona int,fecha_contratacion date,salario int, id_cargo int,id_tipoempleado int,id_empleado serial, constraint "pk_empleado" primary key(id_empleado));
+create table pelicula (id_pelicula serial,titulo varchar(100),fecha_lanzamiento date,director varchar(50),constraint "pk_peliculas" primary key(id_pelicula));
+create table renta_peliculas (id_rentapelicula serial,hora_renta timestamp,hora_termino timestamp,fecha date,id_cliente int,id_pelicula int,constraint "pk_renta_peliculas" primary key(id_rentapelicula));
+create table juegodemesa (id_juegodemesa serial,titulo varchar(100),tipo varchar(50),constraint "pk_juegodemesa" primary key(id_juegodemesa));
+create table rentajuego (id_rentajuego serial,hora_prestamo timestamp,hora_devolucion timestamp,id_cliente int,id_juegodemesa int,constraint "pk_rentajuego" primary key(id_rentajuego));
+create table computadora (id_computadora serial, tipo_computadora int, componentes varchar(100), color varchar(25),constraint "pk_computadora" primary key(id_computadora));
+create table renta_computadoras (id_renta_computadoras serial,hora_renta timestamp,hora_termino timestamp,fecha date,id_cliente int,id_computadora int,constraint "pk_renta_computadoras" primary key(id_renta_computadoras));
+
+ 
+alter table cliente add constraint "cliente_fkey1" Foreign key (id_persona) references personas(id_persona);
+alter table cliente add constraint "cliente_fkey2" Foreign key (id_tipocliente) references tipocliente(id_tipocliente);
+alter table telefono add constraint "telefono_fkey1" foreign key (id_persona) references personas(id_persona);
+alter table contenido add constraint "biblioteca_fkey1" foreign key(id_tipo) references tipo(id_tipo);
+alter table contenido add constraint "biblioteca_fkey2" foreign key(id_seccion) references seccion(id_seccion);
+alter table contenido add constraint "biblioteca_fkey3" foreign key(id_editorial) references editorial(id_editorial);
+alter table contenido add constraint "biblioteca_fkey4" foreign key(id_idioma) references idioma(id_idioma);
+alter table prestamo add constraint "prestamo_fkey1" foreign key (id_contenido) references contenido(id_contenido);
+alter table prestamo add constraint "prestamo_fkey2" foreign key (id_cliente) references cliente(id_cliente);
+alter table empleados add constraint "empleados_fkey1" foreign key (id_cargo) references cargo(id_cargo);
+alter table empleados add constraint "empleados_fkey2" foreign key (id_tipoempleado) references tipoempleado(id_tipoempleado);
+alter table empleados add constraint "empleados_fkey3" foreign key (id_persona) references personas(id_persona);
+alter table renta_peliculas add constraint "renta_peliculas_fkey1" foreign key (id_cliente) references cliente(id_cliente);
+alter table renta_peliculas add constraint "renta_peliculas_fkey2" foreign key (id_pelicula) references pelicula(id_pelicula);
+alter table rentajuego add constraint "rentajuego_fkey1" foreign key (id_cliente) references cliente(id_cliente);
+alter table rentajuego add constraint "rentajuego_fkey2" foreign key (id_juegodemesa) references juegodemesa(id_juegodemesa);
+alter table renta_computadoras add constraint "renta_computadoras_fkey1" foreign key (id_cliente) references cliente(id_cliente);
+alter table renta_computadoras add constraint "renta_computadoras_fkey2" foreign key (id_computadora) references computadora(id_computadora);
+
+
+
+INSERT INTO personas (nombre, apellido_paterno,apellido_materno, edad, direccion) VALUES
+    ('Juan', 'Hernández','Alvarado', 25,'Av. Reforma #123'),
+    ('Ana', 'Gutiérrez','Martínez', 30, 'Calle Insurgentes #456'),
+    ('Carlos', 'López','Martínez', 28, 'Col. Condesa, Calle Tamaulipas #789'),
+    ('Sofía', 'Martínez','Alvarado', 35, 'Av. Juárez #234'),
+    ('Javier', 'Pérez','López', 22, 'Calle Cuauhtémoc #567'),
+    ('Laura', 'Gómez','Cruz', 40, 'Col. Roma, Calle Mérida #890'),
+    ('Rodrigo', 'Díaz','López', 27,'Av. Hidalgo #345'),
+    ('Alejandra', 'Castro','Díaz', 32, 'Calle Oaxaca #567'),
+    ('Miguel', 'Ortega','Gutiérrez', 29, 'Col. Polanco, Calle Tolstoi #678'),
+    ( 'Paola', 'Sánchez','Ramírez', 26, 'Av. Revolución #789'),
+    ( 'Arturo', 'Ramírez','Díaz', 38, 'Calle Veracruz #901'),
+    ( 'Carmen', 'González','Alvarado', 31, 'Col. Del Valle, Calle Sonora #123'),
+    ( 'Héctor', 'Jiménez','Vargas', 24, 'Av. Coyoacán #234'),
+    ('Isabel', 'Vargas','Jiménez', 39, 'Calle Durango #345'),
+    ('Fernando', 'Nava','Gutiérrez', 33, 'Col. Narvarte, Calle Luz Saviñón #567'),
+    ('Liliana', 'Cruz','Alvarado', 28,'Av. Álvaro Obregón #678'),
+    ('Ricardo', 'Soto','Cruz', 37, 'Calle Chiapas #901'),
+    ('María', 'Torres','Ríos', 23, 'Col. Santa Fe, Calle Vasco de Quiroga #123'),
+    ('Felipe', 'Ríos','Torres', 36, 'Av. Patriotismo #234'),
+    ('Diana', 'Herrera','Torres', 27, 'Calle Puebla #345'),
+    ('Gerardo', 'Mendoza','Cruz', 34,'Col. Doctores, Calle Baja California #567'),
+    ('Valeria', 'Salazar','Guerrero', 29, 'Av. Tlalpan #678'),
+    ('Oscar', 'Lara','Lara', 25, 'Calle Querétaro #789'),
+    ('Luisa', 'Valdez','Cruz', 39, 'Col. Escandón, Calle Campeche #123'),
+    ('Gabriel', 'Navarro','Valdez', 22, 'Av. Álamos #234'),
+    ('Verónica', 'Rocha','Ríos', 32, 'Calle Tabasco #567'),
+    ('Jorge', 'Guerrero','Santos', 26, 'Col. Jardín Balbuena, Calle Morelos #678'),
+    ('Natalia', 'Santos','Orozco', 31, 'Av. Azcapotzalco #901'),
+    ('Raul', 'Cabrera','Cruz', 24, 'Calle Tlaxcala #123'),
+    ('Alicia', 'Orozco','Ríos', 35, 'Col. Anzures, Calle Lope de Vega #234'),
+    ('Martín', 'Delgado','Valdez', 28, 'Av. Observatorio #345'),
+    ('Leticia', 'Hidalgo','Alvarado', 33, 'Calle Morelia #567'),
+    ('Eduardo', 'Cisneros','Soto', 30, 'Col. Mixcoac, Calle Toluca #789'),
+    ('Adriana', 'Franco','Bautista', 37, 'Av. Miguel Ángel de Quevedo #890'),
+    ('Antonio', 'Villa','Ríos', 29, 'Calle Michoacán #123'),
+    ('Karen', 'Benitez','Gomez', 26, 'Col. Lindavista, Calle Coahuila #234'),
+    ('Jaime', 'Herrero','Benitez', 40, 'Av. Universidad #345'),
+    ('Gabriela', 'Guzmán','Hidalgo', 25,'Calle Sonora #567'),
+    ('Enrique', 'Bautista','Flores', 38, 'Col. Portales, Calle Celaya #678'),
+    ('Marisol', 'Cruz','Hidalgo', 31, 'Av. Chapultepec #789'),
+    ('Andrés', 'Méndez','Mendoza', 24, 'Calle Pachuca #123'),
+    ('Renata', 'Escobar','Montiel', 35, 'Col. Nápoles, Calle Nebraska #234'),
+    ('Hugo', 'Corona','Cabrera', 27, 'Av. Centenario #345'),
+    ('Daniela', 'Ríos','Hidalgo', 32, 'Calle Zacatecas #567'),
+    ('Martín', 'Rocha','Torres', 29, 'Col. San Jerónimo, Calle Churubusco #678'),
+    ('Paola', 'Mendoza','Mendoza', 36,'Av. Insurgentes #890'),
+    ('Eduardo', 'Bermúdez','Bautista', 23, 'Calle Córdoba #123'),
+    ('Natalia', 'Cabrera','Hidalgo', 30, 'Col. Santa Cruz Atoyac, Calle Tres #234'),
+    ('Ricardo', 'Valencia','Guzmán', 28, 'Av. Tamaulipas #345'),
+    ('Ana', 'Guzmán','Valencia', 33, 'Calle Colima #567');
+select * from personas;	
+
+INSERT INTO telefono (telefono, id_persona) VALUES
+    ('55-1234-5678', 1),
+    ('55-2345-6789', 2),
+    ('55-3456-7890', 3),
+    ('55-4567-8901', 4),
+    ('55-5678-9012', 5),
+    ('55-6789-0123', 6),
+    ('55-7890-1234', 7),
+    ('55-8901-2345', 8),
+    ('55-9012-3456', 9),
+    ('55-0123-4567', 10),
+    ('55-2345-6789', 11),
+    ('55-3456-7890', 12),
+    ('55-4567-8901', 13),
+    ('55-5678-9012', 14),
+    ('55-6789-0123', 15),
+    ('55-7890-1234', 16),
+    ('55-8901-2345', 17),
+    ('55-9012-3456', 18),
+    ('55-0123-4567', 19),
+    ('55-2345-6789', 20),
+    ('55-3456-7890', 21),
+    ('55-4567-8901', 22),
+    ('55-5678-9012', 23),
+    ('55-6789-0123', 24),
+    ('55-7890-1234', 25),
+    ('55-8901-2345', 26),
+    ('55-9012-3456', 27),
+    ('55-0123-4567', 28),
+    ('55-2345-6789', 29),
+    ('55-3456-7890', 30),
+    ('55-4567-8901', 31),
+    ('55-5678-9012', 32),
+    ('55-6789-0123', 33),
+    ('55-7890-1234', 34),
+    ('55-8901-2345', 35),
+    ('55-9012-3456', 36),
+    ('55-0123-4567', 37),
+    ('55-2345-6789', 38),
+    ('55-3456-7890', 39),
+    ('55-4567-8901', 40),
+    ('55-5678-9012', 41),
+    ('55-6789-0123', 42),
+    ('55-7890-1234', 43),
+    ('55-8901-2345', 44),
+    ('55-9012-3456', 45),
+    ('55-0123-4567', 46),
+    ('55-2345-6789', 47),
+    ('55-3456-7890', 48),
+    ('55-4567-8901', 49),
+    ('55-5678-9012', 50);
+select * from telefono;
+    
+
+INSERT INTO tipocliente(tipo_cliente) VALUES
+  ('Frecuente'),('Nuevo'),('VIP');
+select * from tipocliente;
+
+INSERT INTO cliente (id_persona, fecha_registro,id_tipocliente) VALUES
+    (1, '2023-12-01',3),
+    (2, '2023-12-18',3),
+    (3, '2023-12-18',3),
+    (4, '2023-12-20',3),
+    (5, '2023-12-21',2),
+    (6, '2023-12-22',2),
+    (7, '2023-12-30',2),
+    (8, '2024-01-30',1),
+    (9, '2024-01-01',1),
+    (10, '2024-01-01',2),
+    (11, '2024-01-01',2),
+    (12, '2024-01-01',2),
+    (13, '2024-01-01',1),
+    (14, '2024-01-01',1),
+    (15, '2024-01-02',1),
+    (16, '2024-01-02',1),
+    (17, '2024-01-02',1),
+    (18, '2024-01-02',1),
+    (19, '2024-01-03',1),
+    (20, '2024-01-03',1),
+    (21, '2024-01-03',1),
+    (22, '2024-01-04',1),
+    (23, '2024-01-05',3),
+    (24, '2024-01-07',3),
+    (25, '2024-01-07',3);
+select * from cliente;
+
+
+insert into cargo(nombre, descripcion) values
+('Administrativo','Encargado de la base de datos'),
+('Apoyo','Personal de intendencia, limpieza y seguridad'),
+('Encargado de historia','Acomoda libro de historia'),
+('Encargado de matematicas','Acomoda libro de matematicas'),
+('Encargado de Ciencias','Acomoda libro de Ciencias'),
+('Encargado de Artes','Acomoda libro de Artes');
+select * from cargo;
+
+
+insert into tipoempleado(nombre, descripcion) values
+('Tiempo Completo','Personal laboral de 8 horas'),
+('Medio Tiempo','Personal laboral de 4 horas');
+select * from tipoempleado;
+
+
+INSERT INTO empleados (id_persona, fecha_contratacion, salario,id_cargo,id_tipoempleado) VALUES
+    (41, '2023-11-29', 50000,1,1),
+    (42, '2023-11-29', 60000,2,2),
+    (43, '2023-12-01', 55000,3,2),
+    (44, '2023-12-05', 70000,4,1),
+    (45, '2023-12-29', 48000,5,2),
+    (46, '2023-12-29', 52000,6,1),
+    (47, '2023-11-29', 75000,2,2),
+    (48, '2024-01-14', 58000,3,1),
+    (49, '2024-01-14', 67000,4,2),
+    (50, '2024-01-14', 49000,1,2);
+select * from empleados;
+
+
+
+insert into tipo(nombre) values
+('Historieta'),
+('libro'),
+('revista');
+select * from tipo;
+
+
+insert into seccion(nombre,descripcion) values
+('Historia','Area A-C'),
+('Matematicas','Area D-G'),
+('Ciencias','Area H-K'),
+('Ciencia ficcion','Area L-N'),
+('Aventura','Area O-R'),
+('Tecnologia','Area S-U');
+select * from seccion;
+
+INSERT INTO idioma (idioma) VALUES
+    ('Español'),
+    ('Inglés'),
+    ('Coreano');
+select * from idioma;
+
+
+INSERT INTO editorial (nombre, id_editorial) VALUES
+    ('Penguin Random House', 1),
+    ('HarperCollins', 2),
+    ('Simon & Schuster', 3),
+    ('Hachette Livre', 4),
+    ('Macmillan Publishers', 5),
+    ('Scholastic Corporation', 6),
+    ('Pearson Education', 7),
+    ('Cengage Learning', 8),
+    ('Wiley', 9),
+    ('Oxford University Press', 10),
+    ('Cambridge University Press', 11),
+    ('Elsevier', 12),
+    ('Springer Nature', 13),
+    ('Taylor & Francis', 14),
+    ('John Wiley & Sons', 15),
+    ('Routledge', 16),
+    ('McGraw-Hill Education', 17),
+    ('Palgrave Macmillan', 18),
+    ('SAGE Publications', 19),
+    ('Bloomsbury Publishing', 20),
+    ('Houghton Mifflin Harcourt', 21),
+    ('W. W. Norton & Company', 22),
+    ('Rowman & Littlefield', 23),
+    ('MIT Press', 24),
+    ('Princeton University Press', 25),
+    ('Yale University Press', 26),
+    ('University of Chicago Press', 27),
+    ('Random House', 28),
+    ('Little, Brown and Company', 29),
+    ('Grove Atlantic', 30),
+    ('Farrar, Straus and Giroux', 31),
+    ('Knopf Doubleday', 32),
+    ('Scribner', 33),
+    ('Penguin Books', 34),
+    ('Viking Press', 35),
+    ('Pantheon Books', 36),
+    ('Vintage Books', 37),
+    ('Harvard University Press', 38),
+    ('Harvard Business Review Press', 39),
+    ('National Geographic Society', 40),
+    ('New York University Press', 41),
+    ('OReilly Media', 42),
+    ('Perseus Books Group', 43),
+    ('Peachpit Press', 44),
+    ('Que Publishing', 45),
+    ('Addison-Wesley', 46),
+    ('W. H. Freeman', 47),
+    ('Alfred A. Knopf', 48),
+    ('Berkley Books', 49),
+    ('Barleen Books', 50);
+select * from editorial;
+
+
+INSERT INTO contenido (ano,titulo, autor, id_tipo, numero_paginas, descripcion,id_idioma,id_seccion,id_editorial) VALUES
+    ('1967','Cien años de soledad', 'Gabriel García Márquez',1, '432', 'Una novela que narra la historia de la familia Buendía en el pueblo 
+	 ficticio de Macondo.',1,4,1),
+    ('1949','1984', 'George Orwell', 2, '328', 'Distopía que describe un futuro totalitario y vigilado donde el pensamiento libre es prohibido.'
+	 ,1,4,2),
+    ('1960','To Kill a Mockingbird', 'Harper Lee',3, '281', 'Historia sobre la injusticia racial y moral en el sur de los Estados Unidos.'
+	 ,2,4,3),
+    ('1605','Don Quijote de la Mancha', 'Miguel de Cervantes', 2, '863', 'Novela que satiriza las novelas de caballería.',1,4,4),
+    ('1866','Crimen y castigo', 'Fiodor Dostoievski', 1, '671', 'Explora la psicología de un estudiante que comete un asesinato.',1,4,5),
+    ('1960','Matar a un ruiseñor', 'Harper Lee', 3, '376', 'Explora temas de raza y justicia en el sur de Estados Unidos.',1,4,6),
+    ('1908','En busca del tiempo perdido', 'Marcel Proust', 2, '4215', 'Novela introspectiva que examina la memoria y la experiencia.',1,4,7),
+    ('1813','Orgullo y prejuicio', 'Jane Austen', 1, '432', 'Una comedia de costumbres que critica la sociedad del siglo XIX.',1,4,8),
+    ('1949','1984', 'George Orwell', 2, '328', 'Distopía que describe un futuro totalitario y vigilado donde el pensamiento libre es prohibido.',
+	 1,4,9),
+    ('1960','To Kill a Mockingbird', 'Harper Lee', 3, '281', 'Historia sobre la injusticia racial y moral en el sur de los Estados Unidos.',1,4,10),
+    ('1920','Ulises', 'James Joyce', 2, '732', 'Explora la vida y las experiencias de Leopold Bloom en un solo día en Dublín.',1,4,11),
+    ('-1700','La Odisea', 'Homero', 1, '374', 'Epopeya que narra el regreso de Odiseo a Ítaca después de la Guerra de Troya.',1,1,12),
+    ('1866','Crime and Punishment', 'Fyodor Dostoevsky', 2, '551', 'Novela psicológica que explora la angustia mental y 
+	 los dilemas morales de Rodion Raskolnikov.',3,4,13),
+    ('1967','One Hundred Years of Solitude', 'Gabriel García Márquez', 3, '417', 'Novela realista mágica que sigue a la familia Buendía en
+	 el pueblo ficticio de Macondo.',1,4,14),
+    ('1932','Brave New World', 'Aldous Huxley', 1, '311', 'Novela distópica que representa una sociedad futura controlada por la tecnología
+	 y un estado poderoso.',1,4,15),
+    ('1925','The Great Gatsby', 'F. Scott Fitzgerald', 2, '180', 'Exploración del Sueño Americano y los excesos de la Era del Jazz.',2,4,16),
+    ('1932','The Catcher in the Rye', 'J.D. Salinger', 3, '224', 'Novela de iniciación que sigue las experiencias de Holden Caulfield en 
+	 la ciudad de Nueva York.',2,4,17),
+    ('1954','The Lord of the Rings', 'J.R.R. Tolkien', 1, '1178', 'Novela de alta fantasía que sigue la búsqueda para destruir el Anillo 
+	 Único y derrotar al Señor Oscuro Sauron.',2,4,18),
+    ('1932','Pride and Prejudice', 'Jane Austen', 2, '279', 'Novela satírica que explora el amor, la reputación y la clase en el siglo XIX.'
+	 ,2,4,19),
+    ('1932','War and Peace', 'Leo Tolstoy', 1, '1225', 'Novela histórica ambientada en el telón de fondo de las Guerras Napoleónicas.',2,4,20),
+    ('1952','The Brothers Karamazov', 'Fyodor Dostoevsky', 2, '824', 'Novela filosófica que explora la moralidad, la fe y el libre albedrío.',
+	 2,4,21),
+    ('1922','Les Misérables', 'Victor Hugo', 1, '1232', 'Novela histórica que sigue las vidas de varios personajes en la posguerra de la
+	 Revolución Francesa.',1,4,22),
+    ('-1700','The Odyssey', 'Homero', 3, '374', 'Poema épico que narra las aventuras de Odiseo mientras intenta regresar a casa después de la 
+	 Guerra de Troya.',2,1,23),
+    ('1472','The Divine Comedy', 'Dante Alighieri', 1, '798', 'Poema épico que sigue el viaje de Dante a través del Infierno, el Purgatorio y 
+	 el Paraíso.',2,4,24),
+    ('1902','Madame Bovary', 'Gustave Flaubert', 3, '368', 'Novela realista que sigue la vida de Emma Bovary y su búsqueda insatisfecha de la
+	 pasión.',2,4,25),
+    ('1972','The Scarlet Letter', 'Nathaniel Hawthorne', 1, '238', 'Novela que explora la culpa y el estigma social en la Nueva Inglaterra del
+	 siglo XVII.',1,4,26),
+    ('19831','The Hunchback of Notre-Dame', 'Victor Hugo', 2, '940', 'Novela histórica que sigue la historia de amor entre Esmeralda y Quasimodo
+	 en la París medieval.',2,4,27),
+    ('1964','Great Expectations', 'Charles Dickens', 3, '505', 'Novela que narra la vida de Pip, un huérfano que aspira a convertirse en un
+	 caballero de la alta sociedad.',1,4,28),
+    ('1980','The Picture of Dorian Gray', 'Oscar Wilde', 1, '254', 'Novela filosófica que explora las consecuencias de una vida de hedonismo
+	 y esteticismo.',2,4,29),
+    ('1897','Dracula', 'Bram Stoker', 2, '418', 'Novela gótica de horror que presenta al Conde Drácula y la batalla contra un grupo de personas
+	 lideradas por el Profesor Abraham Van Helsing.',1,4,30),
+    ('1932','The Adventures of Sherlock Holmes', 'Arthur Conan Doyle', 3, '307', 'Colección de relatos cortos con el detective Sherlock Holmes
+	 y su amigo el Dr. John Watson.',1,4,31),
+    ('1851','Moby-Dick', 'Herman Melville', 1, '635', 'Novela de aventuras que sigue la búsqueda obsesiva del Capitán Ahab por la ballena blanca
+	 Moby Dick.',2,4,32),
+    ('1932','Alices Adventures in Wonderland', 'Lewis Carroll', 2, '200', 'Novela de fantasía que sigue las aventuras de Alicia en el País de las
+	 Maravillas.',2,4,33),
+    ('1932','The Iliad', 'Homero', 3, '683', 'Poema épico que cuenta la historia de la Guerra de Troya y el héroe griego Aquiles.',1,4,34),
+    ('1972','The Sun Also Rises', 'Ernest Hemingway', 1, '251', 'Novela que explora las experiencias de la "Generación Perdida" después de la
+	 Primera Guerra Mundial.',2,4,35),
+    ('1837','The Sound and the Fury', 'William Faulkner', 2, '326', 'Novela modernista que utiliza el flujo de conciencia para explorar la
+	 familia Compson.',2,4,36),
+    ('1953','The Grapes of Wrath', 'John Steinbeck', 3, '464', 'Novela social que sigue a la familia Joad mientras migran a California
+	 durante la Gran Depresión.',2,4,37),
+    ('1916','Anna Karenina', 'Leo Tolstoy', 1, '964', 'Novela que explora las consecuencias de un romance extramatrimonial en la alta
+	 sociedad de Moscú y San Petersburgo.',2,4,38),
+    ('1986','One Flew Over the Cuckoos Nest', 'Ken Kesey', 2, '325', 'Novela ambientada en un manicomio, explorando temas de autoridad
+	 y rebeldía.',3,5,39),
+    ('1932','The Count of Monte Cristo', 'Alexandre Dumas', 3, '1276', 'Novela de aventuras que sigue la historia de Edmundo Dantès y
+	 su búsqueda de venganza.',3,4,40),
+    ('1994','Wuthering Heights', 'Emily Brontë', 1, '342', 'Novela romántica ambientada en los páramos de Yorkshire, explorando temas de amor,
+	 venganza y clase social.',1,4,41),
+    ('1897','Frankenstein', 'Mary Shelley', 2, '280', 'Novela gótica que explora las consecuencias de jugar a ser Dios y la naturaleza de la
+	 humanidad.',2,4,42),
+    ('1932','The Canterbury Tales', 'Geoffrey Chaucer', 3, '562', 'Colección de cuentos contados por peregrinos en su viaje a la Catedral de
+	 Canterbury.',2,4,43),
+    ('1605','Don Quixote', 'Miguel de Cervantes', 1, '863', 'Novela satírica que sigue las aventuras de Alonso Quixano, quien lee tantas
+	 novelas de caballería que pierde la cordura.',1,4,44),
+    ('1932','Pride and Prejudice', 'Jane Austen', 2, '279', 'Novela satírica que explora el amor, la reputación y la clase en el siglo XIX.'
+	 ,2,4,45),
+    ('1932','War and Peace', 'Leo Tolstoy', 3, '1225', 'Novela histórica ambientada en el contexto de las Guerras Napoleónicas.',1,2,46),
+    ('1942','The Brothers Karamazov', 'Fyodor Dostoevsky', 1, '824', 'Novela filosófica que explora la moralidad, la fe y el libre albedrío.'
+	 ,2,4,47),
+    ('1973','Les Misérables', 'Victor Hugo', 2, '1232', 'Novela histórica que sigue las vidas de varios personajes en la posguerra de la 
+	 Revolución Francesa.',2,4,48),
+    ('-1700','The Odyssey', 'Homero', 3, '374', 'Poema épico que narra las aventuras de Odiseo mientras intenta regresar a casa después de 
+	 la Guerra de Troya.',2,4,49),
+    ('1472','The Divine Comedy', 'Dante Alighieri', 1, '798', 'Poema épico que sigue el viaje de Dante a través del Infierno, el Purgatorio 
+	 y el Paraíso.',1,4,50),
+    ('1932','The Picture of Dorian Gray', 'Oscar Wilde', 2, '254', 'Novela filosófica que explora las consecuencias de una vida de hedonismo 
+	 y esteticismo.',1,4,1),
+    ('1897','Dracula', 'Bram Stoker', 3, '418', 'Novela gótica de horror que presenta al Conde Drácula y la batalla contra un grupo de personas 
+	 lideradas por el Profesor Abraham Van Helsing.',1,4,22),
+    ('1982','The Adventures of Sherlock Holmes', 'Arthur Conan Doyle', 1, '307', 'Colección de relatos cortos con el detective Sherlock Holmes y 
+	 su amigo el Dr. John Watson.',1,4,33);
+   
+SELECT * FROM contenido WHERE id_contenido = 4;
+SELECT * FROM contenido;
+SELECT * FROM cliente;
+
+INSERT INTO prestamo (id_cliente, id_contenido, fecha_prestamo,fecha_tope, fecha_devolucion) VALUES
+    (1, 4, '2024-01-10', '2024-02-10', '2024-02-10'),
+    (1, 15, '2024-02-15', '2024-03-15', '2024-03-15'),
+    (1, 28, '2024-03-20', '2024-04-20', '2024-04-20'),
+    (2, 2, '2024-01-12', '2024-02-12', '2024-02-12'),
+    (2, 10, '2024-03-05', '2024-04-05', '2024-04-05'),
+    (2, 33, '2024-04-15', '2024-05-20', '2024-05-15'),
+    (3, 1, '2024-02-02', '2024-03-02', '2024-03-02'),
+    (3, 6, '2024-03-18', '2024-04-18', '2024-04-18'),
+    (3, 20, '2024-05-01', '2024-06-01', '2024-06-01'),
+    (4, 3, '2024-01-25', '2024-02-25', '2024-02-25'),
+    (4, 17, '2024-02-28', '2024-03-25', '2024-03-28'),
+    (4, 35, '2024-04-02', '2024-05-15', '2024-05-02'),
+    (5, 9, '2024-03-10', '2024-04-11', '2024-04-10'),
+    (5, 23, '2024-04-22', '2024-05-25', '2024-05-22'),
+    (5, 40, '2024-05-28', '2024-06-28', '2024-06-28'),
+    (6, 8, '2024-01-15', '2024-02-15', '2024-02-15'),
+    (6, 19, '2024-03-08', '2024-04-08', '2024-04-08'),
+    (6, 36, '2024-04-12', '2024-05-12', '2024-05-12'),
+    (7, 5, '2024-02-05', '2024-03-05', '2024-03-05'),
+    (7, 16, '2024-03-25', '2024-04-25', '2024-04-25'),
+    (7, 31, '2024-05-05', '2024-06-05', '2024-06-05'),
+    (8, 7, '2024-01-28', '2024-03-08', '2024-02-28'),
+    (8, 26, '2024-02-18', '2024-03-18', '2024-03-18'),
+    (8, 39, '2024-04-08', '2024-06-08', '2024-05-08'),
+    (9, 11, '2024-02-12', '2024-03-15', '2024-03-12'),
+    (9, 25, '2024-03-30', '2024-04-30', '2024-04-30'),
+    (9, 38, '2024-05-10', '2024-06-29', '2024-06-10'),
+    (10, 12, '2024-01-22', '2024-02-25', '2024-02-22'),
+    (10, 27, '2024-03-15', '2024-04-13', '2024-04-15'),
+    (10, 37, '2024-04-30', '2024-05-30', '2024-05-30'),
+    (11, 14, '2024-02-08', '2024-03-08', '2024-03-08'),
+    (11, 30, '2024-03-28', '2024-04-28', '2024-04-28'),
+    (11, 15, '2024-05-03', '2024-06-03', '2024-06-03'),
+    (12, 22, '2024-01-20', '2024-02-25', '2024-02-20'),
+    (12, 34, '2024-03-10', '2024-04-12', '2024-04-10'),
+    (12, 8, '2024-04-18', '2024-05-19', '2024-05-18'),
+    (13, 18, '2024-01-18', '2024-02-18', '2024-02-18'),
+    (13, 29, '2024-03-05', '2024-04-25', '2024-04-05'),
+    (13, 12, '2024-04-22', '2024-05-27', '2024-05-22'),
+    (14, 24, '2024-01-30', '2024-02-23', '2024-02-27'),
+    (14, 40, '2024-03-18', '2024-05-18', '2024-04-18'),
+    (14, 16, '2024-04-25', '2024-05-28', '2024-05-25'),
+    (15, 32, '2024-02-03', '2024-03-13', '2024-03-03'),
+    (15, 5, '2024-03-22', '2024-04-22', '2024-04-22'),
+    (15, 26, '2024-05-08', '2024-06-18', '2024-06-08'),
+    (16, 4, '2024-01-10', '2024-02-10', '2024-02-10'),
+    (16, 15, '2024-02-15', '2024-03-25', '2024-03-15'),
+    (16, 28, '2024-03-20', '2024-04-20', '2024-04-20'),
+    (17, 2, '2024-01-12', '2024-03-12', '2024-02-12'),
+    (17, 10, '2024-03-05', '2024-04-04', '2024-04-05'),
+    (18, 33, '2024-04-15', '2024-05-15', '2024-05-15'),
+    (18, 1, '2024-02-02', '2024-03-02', '2024-03-02'),
+    (19, 6, '2024-03-18', '2024-04-18', '2024-04-18'),
+    (19, 20, '2024-05-01', '2024-06-01', '2024-06-01'),
+    (20, 3, '2024-01-25', '2024-02-25', '2024-02-25'),
+    (20, 17, '2024-02-28', '2024-03-28', '2024-03-28'),
+    (21, 35, '2024-04-02', '2024-05-02', '2024-05-02'),
+    (21, 9, '2024-03-10', '2024-04-10', '2024-04-10'),
+    (21, 23, '2024-04-22', '2024-05-22', '2024-05-22'),
+    (21, 40, '2024-05-28', '2024-06-28', '2024-06-28'),
+    (21,8, '2024-01-15', '2024-02-15', '2024-02-15'),
+    (22, 19, '2024-03-08', '2024-04-08', '2024-04-08'),
+    (22, 36, '2024-04-12', '2024-05-12', '2024-05-12'),
+    (23, 5, '2024-02-05', '2024-03-05', '2024-03-05'),
+    (23, 16, '2024-03-25', '2024-04-25', '2024-04-25'),
+    (24, 31, '2024-05-05', '2024-06-05', '2024-06-05'),
+    (24, 7, '2024-01-28', '2024-02-28', '2024-02-28'),
+    (25, 26, '2024-02-18', '2024-03-18', '2024-03-18'),
+    (25, 39, '2024-04-08', '2024-05-08', '2024-05-08'),
+    (12, 11, '2024-02-12', '2024-03-22', '2024-03-12'),
+    (12, 25, '2024-03-30', '2024-04-30', '2024-04-30'),
+    (12, 38, '2024-05-10', '2024-06-14', '2024-06-10'),
+    (11, 12, '2024-01-22', '2024-02-26', '2024-02-22'),
+    (11, 27, '2024-03-15', '2024-04-17', '2024-04-15'),
+    (16, 37, '2024-04-30', '2024-05-30', '2024-05-30'),
+    (11, 14, '2024-02-08', '2024-03-18', '2024-03-08'),
+    (11, 30, '2024-03-28', '2024-04-28', '2024-04-28'),
+    (18, 15, '2024-05-03', '2024-06-03', '2024-06-03'),
+    (25, 22, '2024-01-20', '2024-02-23', '2024-02-20'),
+    (25, 34, '2024-03-10', '2024-04-10', '2024-04-10'),
+    (22, 8, '2024-04-18', '2024-05-18', '2024-05-18'),
+    (23, 18, '2024-01-18', '2024-02-18', '2024-02-18'),
+    (13, 29, '2024-03-05', '2024-04-05', '2024-04-05'),
+    (23, 12, '2024-04-22', '2024-05-22', '2024-05-22'),
+    (14, 24, '2024-01-30', '2024-02-27', '2024-02-27'),
+    (24, 40, '2024-03-18', '2024-04-18', '2024-04-18'),
+    (24, 16, '2024-04-25', '2024-05-25', '2024-05-25'),
+    (25, 32, '2024-02-03', '2024-03-03', '2024-03-03'),
+    (19, 5, '2024-03-22', '2024-04-22', '2024-04-22'),
+    (11, 26, '2024-05-08', '2024-06-08', '2024-06-08');
+select * from prestamo;
+
+INSERT INTO pelicula (id_pelicula, titulo, fecha_lanzamiento, director) VALUES
+    (1, 'The Shawshank Redemption', '1994-09-23', 'Frank Darabont'),
+    (2,'The Godfather', '1972-03-15', 'Francis Ford Coppola'),
+    (3,'The Dark Knight', '2008-07-14', 'Christopher Nolan'),
+    (4,'Schindler''s List', '1993-11-30', 'Steven Spielberg'),
+    (5,'Pulp Fiction', '1994-05-12', 'Quentin Tarantino'),
+    (6,'The Lord of the Rings: The Return of the King', '2003-12-01', 'Peter Jackson'),
+    (7,'Forrest Gump', '1994-06-23', 'Robert Zemeckis'),
+    (8,'The Matrix', '1999-03-24', 'Lana and Lilly Wachowski'),
+    (9,'The Silence of the Lambs', '1991-01-30', 'Jonathan Demme'),
+    (10,'Saving Private Ryan', '1998-07-24', 'Steven Spielberg'),
+    (11,'The Godfather: Part II', '1974-12-12', 'Francis Ford Coppola'),
+    (12,'The Dark Knight Rises', '2012-07-16', 'Christopher Nolan'),
+    (13,'Fight Club', '1999-10-15', 'David Fincher'),
+    (14,'The Shawshank Redemption', '1994-09-23', 'Frank Darabont'),
+    (15,'Inception', '2010-07-08', 'Christopher Nolan'),
+    (16,'The Lord of the Rings: The Fellowship of the Ring', '2001-12-10', 'Peter Jackson'),
+    (17,'The Godfather: Part III', '1990-12-20', 'Francis Ford Coppola'),
+    (18,'The Shawshank Redemption', '1994-09-23', 'Frank Darabont'),
+    (19,'The Dark Knight', '2008-07-14', 'Christopher Nolan'),
+    (20,'The Matrix', '1999-03-24', 'Lana and Lilly Wachowski'),
+    (21,'Pulp Fiction', '1994-05-12', 'Quentin Tarantino'),
+    (22,'Forrest Gump', '1994-06-23', 'Robert Zemeckis'),
+    (23,'The Lord of the Rings: The Two Towers', '2002-12-18', 'Peter Jackson'),
+    (24,'The Silence of the Lambs', '1991-01-30', 'Jonathan Demme'),
+    (25,'Saving Private Ryan', '1998-07-24', 'Steven Spielberg'),
+    (26,'The Godfather', '1972-03-15', 'Francis Ford Coppola'),
+    (27,'The Dark Knight Rises', '2012-07-16', 'Christopher Nolan'),
+    (28,'The Shawshank Redemption', '1994-09-23', 'Frank Darabont'),
+    (29,'Inception', '2010-07-08', 'Christopher Nolan'),
+    (30,'The Departed', '2006-10-06', 'Martin Scorsese'),
+    (31,'The Green Mile', '1999-12-06', 'Frank Darabont'),
+    (32,'The Social Network', '2010-09-24', 'David Fincher'),
+    (33,'The Grand Budapest Hotel', '2014-02-06', 'Wes Anderson'),
+    (34,'Gladiator', '2000-05-01', 'Ridley Scott'),
+    (35,'Inglourious Basterds', '2009-05-20', 'Quentin Tarantino'),
+    (36,'The Revenant', '2015-12-16', 'Alejandro G. Iñárritu'),
+    (37,'Goodfellas', '1990-09-09', 'Martin Scorsese'),
+    (38,'The Shining', '1980-05-23', 'Stanley Kubrick'),
+    (39,'Jurassic Park', '1993-06-09', 'Steven Spielberg'),
+    (40,'Blade Runner', '1982-06-25', 'Ridley Scott'),
+    (41,'Casablanca', '1942-11-26', 'Michael Curtiz'),
+    (42,'The Usual Suspects', '1995-07-19', 'Bryan Singer'),
+    (43,'A Clockwork Orange', '1971-12-19', 'Stanley Kubrick'),
+    (44,'The Terminator', '1984-10-26', 'James Cameron'),
+    (45,'Memento', '2000-09-05', 'Christopher Nolan'),
+    (46,'The Sixth Sense', '1999-08-02', 'M. Night Shyamalan'),
+    (47,'Schindler''s List', '1993-12-15', 'Steven Spielberg'),
+    (48,'The Exorcist', '1973-12-26', 'William Friedkin'),
+    (49,'The Prestige', '2006-10-17', 'Christopher Nolan'),
+    (50,'Eternal Sunshine of the Spotless Mind', '2004-03-19', 'Michel Gondry'),
+    (51,'Django Unchained', '2012-12-11', 'Quentin Tarantino'),
+    (52,'The Silence of the Lambs', '1991-01-30', 'Jonathan Demme'),
+    (53,'The Princess Bride', '1987-09-25', 'Rob Reiner'),
+    (54,'American History X', '1998-10-30', 'Tony Kaye'),
+    (55,'The Wizard of Oz', '1939-08-15', 'Victor Fleming'),
+    (56,'The Lion King', '1994-06-15', 'Roger Allers, Rob Minkoff'),
+    (57,'Crouching Tiger, Hidden Dragon', '2000-05-18', 'Ang Lee'),
+    (58,'Requiem for a Dream', '2000-10-27', 'Darren Aronofsky'),
+    (59,'Shawshank Redemption', '1994-09-23', 'Frank Darabont'),
+    (60,'The Godfather: Part III', '1990-12-25', 'Francis Ford Coppola'),
+    (61,'The Lord of the Rings: The Fellowship of the Ring', '2001-12-10', 'Peter Jackson'),
+    (62,'The Dark Knight Rises', '2012-07-16', 'Christopher Nolan'),
+    (63,'The Grand Budapest Hotel', '2014-02-06', 'Wes Anderson'),
+    (64,'The Wolf of Wall Street', '2013-12-25', 'Martin Scorsese'),
+    (65,'The Revenant', '2015-12-16', 'Alejandro González Iñárritu'),
+    (66,'The Departed', '2006-10-06', 'Martin Scorsese'),
+    (67,'The Big Lebowski', '1998-03-06', 'Joel Coen'),
+    (68,'The Shape of Water', '2017-12-01', 'Guillermo del Toro'),
+    (69,'The Social Network', '2010-09-24', 'David Fincher'),
+    (70,'The Truman Show', '1998-06-01', 'Peter Weir'),
+    (71,'The Exorcist', '1973-12-26', 'William Friedkin'),
+    (72,'The Princess Bride', '1987-09-25', 'Rob Reiner'),
+    (73,'The Pianist', '2002-09-02', 'Roman Polanski'),
+    (74,'The Terminator', '1984-10-26', 'James Cameron'),
+    (75,'The Shining', '1980-05-23', 'Stanley Kubrick'),
+    (76,'The Silence of the Lambs', '1991-01-30', 'Jonathan Demme'),
+    (77,'The Sixth Sense', '1999-08-02', 'M. Night Shyamalan'),
+    (78,'The Wizard of Oz', '1939-08-15', 'Victor Fleming');
+select * from pelicula;
+
+
+INSERT INTO juegodemesa (id_juegodemesa, titulo, tipo) VALUES
+(1, 'Risk', 1),
+(2, 'Catan', 1),
+(3, 'Scrabble', 1),
+(4, 'Dominion', 1),
+(5, 'Ticket to Ride', 1),
+(6, 'Ajedrez', 1),
+(7, 'Clue', 1),
+(8, 'Hundir la Flota', 1),
+(9, 'Pandemia', 1),
+(10, 'Código Secreto', 1),
+(11, 'Splendor', 1),
+(12, 'Twister', 1),
+(13, 'Yahtzee', 1),
+(14, 'Conecta 4', 1),
+(15, 'Damas', 1),
+(16, 'Carcassonne', 1),
+(17, 'Ludo', 1),
+(18, 'Sorry!', 1),
+(19, 'Stratego', 1),
+(20, 'Jenga', 1);
+select * from juegodemesa;
+
+INSERT INTO rentajuego (id_juegodemesa, id_cliente, hora_prestamo, hora_devolucion) VALUES
+    (11, 15, '2024-05-30 14:30:00', '2024-05-30 17:30:00'),
+    (20, 14, '2024-02-08 12:15:00', '2024-02-08 15:15:00'),
+    (20, 3, '2024-03-28 17:40:00', '2024-03-28 20:40:00'),
+    (20, 5, '2024-05-03 09:00:00', '2024-05-03 12:00:00'),
+    (1, 2, '2024-01-20 14:25:00', '2024-01-20 17:25:00'),
+    (6, 4, '2024-03-10 13:50:00', '2024-03-10 16:50:00'),
+    (7, 8, '2024-04-18 10:30:00', '2024-04-18 13:30:00'),
+    (2, 1, '2024-01-18 11:45:00', '2024-01-18 14:45:00'),
+    (3, 9, '2024-03-05 19:20:00', '2024-03-05 22:20:00'),
+    (4, 2, '2024-04-22 16:00:00', '2024-04-22 19:00:00'),
+    (4, 6, '2024-01-30 15:35:00', '2024-01-30 18:35:00'),
+    (5, 7, '2024-03-18 14:10:00', '2024-03-18 17:10:00'),
+    (6, 8, '2024-04-25 10:45:00', '2024-04-25 13:45:00'),
+    (7, 9, '2024-02-03 18:00:00', '2024-02-03 21:00:00'),
+    (8, 5, '2024-03-22 13:25:00', '2024-03-22 16:25:00'),
+    (9, 10, '2024-05-08 16:15:00', '2024-05-08 19:15:00'),
+    (10, 11, '2024-06-15 09:50:00', '2024-06-15 12:50:00'),
+    (12, 12, '2024-01-10 14:00:00', '2024-01-10 17:00:00'),
+    (12, 13, '2024-03-20 11:30:00', '2024-03-20 14:30:00'),
+    (11, 14, '2024-04-12 15:05:00', '2024-04-12 18:05:00'),
+    (11,15, '2024-02-05 16:40:00', '2024-02-05 19:40:00'),
+    (12, 16, '2024-03-25 18:20:00', '2024-03-25 21:20:00'),
+    (13, 17, '2024-05-05 12:00:00', '2024-05-05 15:00:00'),
+    (14,17, '2024-01-28 10:15:00', '2024-01-28 13:15:00'),
+    (15, 16, '2024-02-18 17:45:00', '2024-02-18 20:45:00'),
+    (16, 19, '2024-04-08 14:30:00', '2024-04-08 17:30:00'),
+    (17, 11, '2024-02-12 15:10:00', '2024-02-12 18:10:00'),
+    (18, 25, '2024-03-30 11:35:00', '2024-03-30 14:35:00'),
+    (19, 18, '2024-05-10 13:20:00', '2024-05-10 16:20:00'),
+    (20, 12, '2024-01-22 14:55:00', '2024-01-22 17:55:00'),
+    (12, 18, '2024-03-15 19:40:00', '2024-03-15 22:40:00'),
+    (12, 19, '2024-04-30 09:25:00', '2024-04-30 12:25:00'),
+    (13, 20, '2024-02-08 11:20:00', '2024-02-08 14:20:00'),
+    (4, 21, '2024-03-28 16:55:00', '2024-03-28 19:55:00'),
+    (5, 22, '2024-05-03 13:40:00', '2024-05-03 16:40:00'),
+    (6, 22, '2024-01-20 15:45:00', '2024-01-20 18:45:00'),
+    (7, 23, '2024-03-10 12:10:00', '2024-03-10 15:10:00'),
+    (8,18, '2024-04-18 11:55:00', '2024-04-18 14:55:00'),
+    (9, 24, '2024-01-18 13:30:00', '2024-01-18 16:30:00'),
+    (5, 25, '2024-03-05 20:45:00', '2024-03-05 23:45:00');
+select * from rentajuego;
+	
+
+INSERT INTO computadora (tipo_computadora, componentes, color) VALUES
+    (1, 'Procesador Intel Core i5, 8 GB RAM, 256 GB SSD', 'Negro'),
+    (2, 'Procesador AMD Ryzen 7, 16 GB RAM, 512 GB SSD', 'Plata'),
+    (1, 'Procesador Intel Core i7, 12 GB RAM, 1 TB HDD', 'Blanco'),
+    (3, 'Procesador AMD Ryzen 5, 8 GB RAM, 256 GB SSD', 'Rojo'),
+    (2, 'Procesador Intel Core i9, 32 GB RAM, 1 TB SSD', 'Azul'),
+    (1, 'Procesador AMD Ryzen 3, 4 GB RAM, 128 GB SSD', 'Verde'),
+    (3, 'Procesador Intel Core i5, 16 GB RAM, 512 GB SSD', 'Gris'),
+    (2, 'Procesador AMD Ryzen 9, 64 GB RAM, 2 TB HDD', 'Negro'),
+    (1, 'Procesador Intel Core i3, 8 GB RAM, 256 GB SSD', 'Plateado'),
+    (3, 'Procesador AMD Ryzen 7, 12 GB RAM, 1 TB SSD', 'Blanco'),
+    (2, 'Procesador Intel Core i7, 32 GB RAM, 1 TB SSD', 'Negro'),
+    (1, 'Procesador AMD Ryzen 5, 16 GB RAM, 512 GB SSD', 'Azul'),
+    (3, 'Procesador Intel Core i9, 64 GB RAM, 2 TB HDD', 'Rojo'),
+    (2, 'Procesador AMD Ryzen 3, 8 GB RAM, 256 GB SSD', 'Verde'),
+    (1, 'Procesador Intel Core i5, 12 GB RAM, 1 TB HDD', 'Gris'),
+    (3, 'Procesador AMD Ryzen 7, 32 GB RAM, 1 TB SSD', 'Negro'),
+    (2, 'Procesador Intel Core i7, 64 GB RAM, 2 TB SSD', 'Plateado'),
+    (1, 'Procesador AMD Ryzen 9, 8 GB RAM, 256 GB SSD', 'Blanco'),
+    (3, 'Procesador Intel Core i3, 16 GB RAM, 512 GB SSD', 'Negro'),
+    (2, 'Procesador AMD Ryzen 5, 12 GB RAM, 1 TB SSD', 'Rojo'),
+    (1, 'Procesador Intel Core i9, 32 GB RAM, 1 TB HDD', 'Azul'),
+    (3, 'Procesador AMD Ryzen 7, 64 GB RAM, 2 TB SSD', 'Verde'),
+    (2, 'Procesador Intel Core i5, 8 GB RAM, 256 GB SSD', 'Gris'),
+    (1, 'Procesador AMD Ryzen 3, 16 GB RAM, 512 GB SSD', 'Negro'),
+    (3, 'Procesador Intel Core i7, 32 GB RAM, 1 TB SSD', 'Plateado'),
+    (2, 'Procesador AMD Ryzen 9, 8 GB RAM, 256 GB SSD', 'Blanco'),
+    (1, 'Procesador Intel Core i3, 12 GB RAM, 1 TB HDD', 'Rojo'),
+    (3, 'Procesador AMD Ryzen 5, 32 GB RAM, 1 TB SSD', 'Azul'),
+    (2, 'Procesador Intel Core i9, 64 GB RAM, 2 TB HDD', 'Verde'),
+    (1, 'Procesador AMD Ryzen 7, 16 GB RAM, 512 GB SSD', 'Gris'),
+    (3, 'Procesador Intel Core i5, 8 GB RAM, 256 GB SSD', 'Negro'),
+    (2, 'Procesador AMD Ryzen 3, 4 GB RAM, 128 GB SSD', 'Plata'),
+    (1, 'Procesador Intel Core i7, 12 GB RAM, 1 TB HDD', 'Blanco'),
+    (3, 'Procesador AMD Ryzen 5, 8 GB RAM, 256 GB SSD', 'Rojo'),
+    (2, 'Procesador Intel Core i9, 32 GB RAM, 1 TB SSD', 'Azul'),
+    (1, 'Procesador AMD Ryzen 3, 4 GB RAM, 128 GB SSD', 'Verde'),
+    (3, 'Procesador Intel Core i5, 16 GB RAM, 512 GB SSD', 'Gris'),
+    (2, 'Procesador AMD Ryzen 7, 12 GB RAM, 1 TB SSD', 'Negro'),
+    (1, 'Procesador Intel Core i3, 8 GB RAM, 256 GB SSD', 'Plateado'),
+    (3, 'Procesador AMD Ryzen 9, 64 GB RAM, 2 TB HDD', 'Blanco'),
+    (2, 'Procesador Intel Core i7, 32 GB RAM, 1 TB SSD', 'Negro'),
+    (1, 'Procesador AMD Ryzen 5, 16 GB RAM, 512 GB SSD', 'Azul'),
+    (3, 'Procesador Intel Core i9, 64 GB RAM, 2 TB HDD', 'Rojo'),
+    (2, 'Procesador AMD Ryzen 3, 8 GB RAM, 256 GB SSD', 'Verde'),
+    (1, 'Procesador Intel Core i5, 12 GB RAM, 1 TB HDD', 'Gris'),
+    (3, 'Procesador AMD Ryzen 7, 32 GB RAM, 1 TB SSD', 'Negro'),
+    (2, 'Procesador Intel Core i7, 64 GB RAM, 2 TB SSD', 'Plateado'),
+    (1, 'Procesador AMD Ryzen 9, 8 GB RAM, 256 GB SSD', 'Blanco'),
+    (3, 'Procesador Intel Core i3, 16 GB RAM, 512 GB SSD', 'Negro'),
+    (2, 'Procesador AMD Ryzen 5, 12 GB RAM, 1 TB SSD', 'Rojo'),
+    (1, 'Procesador Intel Core i9, 32 GB RAM, 1 TB HDD', 'Azul'),
+    (3, 'Procesador AMD Ryzen 7, 64 GB RAM, 2 TB SSD', 'Verde'),
+    (2, 'Procesador Intel Core i5, 8 GB RAM, 256 GB SSD', 'Gris'),
+    (1, 'Procesador AMD Ryzen 3, 16 GB RAM, 512 GB SSD', 'Negro'),
+    (3, 'Procesador Intel Core i7, 32 GB RAM, 1 TB SSD', 'Plateado'),
+    (2, 'Procesador AMD Ryzen 9, 8 GB RAM, 256 GB SSD', 'Blanco');
+select * from computadora;
+
+
+INSERT INTO renta_computadoras (hora_renta, hora_termino, fecha, id_cliente, id_computadora)
+VALUES
+    ('2024-05-30 14:30:00', '2024-05-30 17:30:00', '2024-05-30', 15, 1),
+    ('2024-02-08 12:15:00', '2024-02-08 15:15:00', '2024-02-08', 14, 2),
+    ('2024-03-28 17:40:00', '2024-03-28 20:40:00', '2024-03-28', 3, 3),
+    ('2024-05-03 09:00:00', '2024-05-03 12:00:00', '2024-05-03', 5, 4),
+    ('2024-01-20 14:25:00', '2024-01-20 17:25:00', '2024-01-20', 2, 5),
+    ('2024-03-10 13:50:00', '2024-03-10 16:50:00', '2024-03-10', 4, 6),
+    ('2024-04-18 10:30:00', '2024-04-18 13:30:00', '2024-04-18', 8, 7),
+    ('2024-01-18 11:45:00', '2024-01-18 14:45:00', '2024-01-18', 1, 8),
+    ('2024-03-05 19:20:00', '2024-03-05 22:20:00', '2024-03-05', 9, 9),
+    ('2024-04-22 16:00:00', '2024-04-22 19:00:00', '2024-04-22', 2, 10),
+    ('2024-01-30 15:35:00', '2024-01-30 18:35:00', '2024-01-30', 6, 11),
+    ('2024-03-18 14:10:00', '2024-03-18 17:10:00', '2024-03-18', 8, 12),
+    ('2024-04-25 10:45:00', '2024-04-25 13:45:00', '2024-04-25', 9, 13),
+    ('2024-02-03 18:00:00', '2024-02-03 21:00:00', '2024-02-03', 5, 14),
+    ('2024-03-22 13:25:00', '2024-03-22 16:25:00', '2024-03-22', 16, 15),
+    ('2024-05-08 16:15:00', '2024-05-08 19:15:00', '2024-05-08', 10, 16),
+    ('2024-06-15 09:50:00', '2024-06-15 12:50:00', '2024-06-15', 11, 17),
+    ('2024-01-10 14:00:00', '2024-01-10 17:00:00', '2024-01-10', 12, 18),
+    ('2024-03-20 11:30:00', '2024-03-20 14:30:00', '2024-03-20', 13, 19),
+    ('2024-04-12 15:05:00', '2024-04-12 18:05:00', '2024-04-12', 14, 20),
+    ('2024-02-05 16:40:00', '2024-02-05 19:40:00', '2024-02-05', 15, 21),
+    ('2024-03-25 18:20:00', '2024-03-25 21:20:00', '2024-03-25', 16, 22),
+    ('2024-05-05 12:00:00', '2024-05-05 15:00:00', '2024-05-05', 17, 23),
+    ('2024-01-28 10:15:00', '2024-01-28 13:15:00', '2024-01-28', 17, 24),
+    ('2024-02-18 17:45:00', '2024-02-18 20:45:00', '2024-02-18', 16, 25),
+    ('2024-04-08 14:30:00', '2024-04-08 17:30:00', '2024-04-08', 19, 26),
+    ('2024-02-12 15:10:00', '2024-02-12 18:10:00', '2024-02-12', 11, 27),
+    ('2024-03-30 11:35:00', '2024-03-30 14:35:00', '2024-03-30', 25, 28),
+    ('2024-05-10 13:20:00', '2024-05-10 16:20:00', '2024-05-10', 18, 29),
+    ('2024-01-22 14:55:00', '2024-01-22 17:55:00', '2024-01-22', 12, 30),
+    ('2024-03-15 19:40:00', '2024-03-15 22:40:00', '2024-03-15', 18, 31),
+    ('2024-04-30 09:25:00', '2024-04-30 12:25:00', '2024-04-30', 19, 32),
+    ('2024-02-08 11:20:00', '2024-02-08 14:20:00', '2024-02-08', 20, 33),
+    ('2024-03-28 16:55:00', '2024-03-28 19:55:00', '2024-03-28', 21, 34),
+    ('2024-01-20 15:45:00', '2024-01-20 18:45:00', '2024-01-20', 22, 36),
+    ('2024-03-10 12:10:00', '2024-03-10 15:10:00', '2024-03-10', 23, 37),
+    ('2024-04-18 11:55:00', '2024-04-18 14:55:00', '2024-04-18', 18, 38),
+    ('2024-01-18 13:30:00', '2024-01-18 16:30:00', '2024-01-18', 24, 39),
+    ('2024-03-05 20:45:00', '2024-03-05 23:45:00', '2024-03-05', 25, 40),
+    ('2024-04-15 14:20:00', '2024-04-15 17:20:00', '2024-04-15', 2, 41),
+    ('2024-05-25 10:55:00', '2024-05-25 13:55:00', '2024-05-25', 7, 42),
+    ('2024-01-30 12:40:00', '2024-01-30 15:40:00', '2024-01-30', 8, 43),
+    ('2024-02-15 16:05:00', '2024-02-15 19:05:00', '2024-02-15', 19, 44),
+    ('2024-03-28 18:30:00', '2024-03-28 21:30:00', '2024-03-28', 3, 45);
+select * from renta_computadoras;
+
+INSERT INTO renta_peliculas (hora_renta, hora_termino, fecha, id_cliente, id_pelicula) VALUES
+    ('2024-01-10 14:30:00', '2024-01-10 17:30:00', '2024-01-10', 1, 1),
+    ('2024-02-15 12:15:00', '2024-02-15 15:15:00', '2024-02-15', 2, 5),
+    ('2024-03-20 17:40:00', '2024-03-20 20:40:00', '2024-03-20', 3, 9),
+    ('2024-01-12 14:25:00', '2024-01-12 17:25:00', '2024-01-12', 4, 12),
+    ('2024-03-05 17:40:00', '2024-03-05 20:40:00', '2024-03-05', 5, 16),
+    ('2024-04-15 09:00:00', '2024-04-15 12:00:00', '2024-04-15', 6, 20),
+    ('2024-02-02 13:50:00', '2024-02-02 16:50:00', '2024-02-02', 7, 25),
+    ('2024-03-18 19:20:00', '2024-03-18 22:20:00', '2024-03-18', 8, 30),
+    ('2024-05-01 16:00:00', '2024-05-01 19:00:00', '2024-05-01', 9, 36),
+    ('2024-01-25 15:35:00', '2024-01-25 18:35:00', '2024-01-25', 10, 2),
+    ('2024-02-28 14:10:00', '2024-02-28 17:10:00', '2024-02-28', 11, 7),
+    ('2024-04-02 10:45:00', '2024-04-02 13:45:00', '2024-04-02', 12, 14),
+    ('2024-03-10 13:25:00', '2024-03-10 16:25:00', '2024-03-10', 13, 21),
+    ('2024-04-22 16:15:00', '2024-04-22 19:15:00', '2024-04-22', 14, 28),
+    ('2024-01-15 14:00:00', '2024-01-15 17:00:00', '2024-01-15', 15, 33),
+    ('2024-03-08 11:30:00', '2024-03-08 14:30:00', '2024-03-08', 16, 4),
+    ('2024-04-12 15:05:00', '2024-04-12 18:05:00', '2024-04-12', 17, 11),
+    ('2024-02-05 16:40:00', '2024-02-05 19:40:00', '2024-02-05', 18, 18),
+    ('2024-03-25 18:20:00', '2024-03-25 21:20:00', '2024-03-25', 19, 25),
+    ('2024-05-05 12:00:00', '2024-05-05 15:00:00', '2024-05-05', 20, 31),
+    ('2024-01-28 10:15:00', '2024-01-28 13:15:00', '2024-01-28', 21, 38),
+    ('2024-02-18 17:45:00', '2024-02-18 20:45:00', '2024-02-18', 22, 6),
+    ('2024-04-08 14:30:00', '2024-04-08 17:30:00', '2024-04-08', 3, 13),
+    ('2024-02-12 15:10:00', '2024-02-12 18:10:00', '2024-02-12', 2, 19),
+    ('2024-03-30 11:35:00', '2024-03-30 14:35:00', '2024-03-30', 25, 27),
+    ('2024-05-10 13:20:00', '2024-05-10 16:20:00', '2024-05-10', 16, 35),
+    ('2024-01-22 14:55:00', '2024-01-22 17:55:00', '2024-01-22', 11, 40),
+    ('2024-03-15 19:40:00', '2024-03-15 22:40:00', '2024-03-15', 18, 15),
+    ('2024-04-30 09:25:00', '2024-04-30 12:25:00', '2024-04-30', 9, 23),
+    ('2024-02-08 11:20:00', '2024-02-08 14:20:00', '2024-02-08', 3, 32),
+    ('2024-03-28 16:55:00', '2024-03-28 19:55:00', '2024-03-28', 1, 5),
+    ('2024-05-03 13:40:00', '2024-05-03 16:40:00', '2024-05-03', 3, 26),
+    ('2024-01-20 15:45:00', '2024-01-20 18:45:00', '2024-01-20', 3, 16),
+    ('2024-03-10 12:10:00', '2024-03-10 15:10:00', '2024-03-10', 24, 8),
+    ('2024-05-15 16:30:00', '2024-05-15 19:30:00', '2024-05-15', 21, 64),
+    ('2024-02-08 12:15:00', '2024-02-08 15:15:00', '2024-02-08', 22, 53),
+    ('2024-03-28 17:40:00', '2024-03-28 20:40:00', '2024-03-28', 23, 45),
+    ('2024-05-03 09:00:00', '2024-05-03 12:00:00', '2024-05-03', 24, 2),
+    ('2024-01-20 14:25:00', '2024-01-20 17:25:00', '2024-01-20', 25, 32),
+    ('2024-03-10 13:50:00', '2024-03-10 16:50:00', '2024-03-10', 21, 9),
+    ('2024-04-18 10:30:00', '2024-04-18 13:30:00', '2024-04-18', 22, 14),
+    ('2024-01-18 11:45:00', '2024-01-18 14:45:00', '2024-01-18', 23, 21),
+    ('2024-03-05 19:20:00', '2024-03-05 22:20:00', '2024-03-05', 24, 28),
+    ('2024-04-22 16:00:00', '2024-04-22 19:00:00', '2024-04-22', 25, 39),
+    ('2024-01-30 15:35:00', '2024-01-30 18:35:00', '2024-01-30', 21, 17),
+    ('2024-03-18 14:10:00', '2024-03-18 17:10:00', '2024-03-18', 22, 24),
+    ('2024-04-25 10:45:00', '2024-04-25 13:45:00', '2024-04-25', 23, 36),
+    ('2024-02-03 18:00:00', '2024-02-03 21:00:00', '2024-02-03', 24, 15),
+    ('2024-03-22 13:25:00', '2024-03-22 16:25:00', '2024-03-22', 25, 22),
+    ('2024-05-08 16:15:00', '2024-05-08 19:15:00', '2024-05-08', 21, 29),
+    ('2024-06-15 09:50:00', '2024-06-15 12:50:00', '2024-06-15', 22, 38),
+    ('2024-01-10 14:00:00', '2024-01-10 17:00:00', '2024-01-10', 23, 6),
+    ('2024-03-20 11:30:00', '2024-03-20 14:30:00', '2024-03-20', 24, 13),
+    ('2024-04-12 15:05:00', '2024-04-12 18:05:00', '2024-04-12', 25, 25),
+    ('2024-02-05 16:40:00', '2024-02-05 19:40:00', '2024-02-05', 21, 31),
+    ('2024-03-25 18:20:00', '2024-03-25 21:20:00', '2024-03-25', 22, 40),
+    ('2024-05-05 12:00:00', '2024-05-05 15:00:00', '2024-05-05', 23, 7),
+    ('2024-01-28 10:15:00', '2024-01-28 13:15:00', '2024-01-28', 24, 17),
+    ('2024-02-18 17:45:00', '2024-02-18 20:45:00', '2024-02-18', 25, 19),
+    ('2024-04-08 14:30:00', '2024-04-08 17:30:00', '2024-04-08', 21, 27),
+    ('2024-02-12 15:10:00', '2024-02-12 18:10:00', '2024-02-12', 22, 35),
+    ('2024-03-30 11:35:00', '2024-03-30 14:35:00', '2024-03-30', 23, 5),
+    ('2024-05-10 13:20:00', '2024-05-10 16:20:00', '2024-05-10', 24, 12),
+    ('2024-01-22 14:55:00', '2024-01-22 17:55:00', '2024-01-22', 25, 18);
+select * from renta_peliculas;
+
